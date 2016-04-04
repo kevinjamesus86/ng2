@@ -1,0 +1,126 @@
+@charset "utf-8";
+
+@-webkit-viewport   { width: device-width; }
+@-moz-viewport      { width: device-width; }
+@-ms-viewport       { width: device-width; }
+@-o-viewport        { width: device-width; }
+@viewport           { width: device-width; }
+
+@import (less) "bootstrap/less/bootstrap";
+@import (inline) "normalize-css/normalize.css";
+
+////////////////////////
+// opinionated defaults?
+////////////////////////
+
+
+*,
+*::after,
+*::before {
+    box-sizing: inherit;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 13px;
+    min-width: 320px;
+    box-sizing: border-box;
+    background-color: #f3f5f7;
+}
+
+body {
+    color: #323a45;
+    font: 400 1em/1.5 "Open Sans", "Helvetica Neue", Arial, sans-serif;
+    background-color: inherit;
+    cursor: default;
+}
+
+/* contain margins */
+body::after,
+body::before {
+    content: " ";
+    display: table;
+}
+
+button,
+[type=text],
+[type=number],
+[type=search],
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+a {
+    font: inherit;
+    text-decoration: none;
+}
+
+/* Remove controls from Firefox */
+.input--number {
+  -moz-appearance: textfield;
+}
+
+/* Remove controls from Safari and Chrome */
+.input--number::-webkit-inner-spin-button,
+.input--number::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0; /* Removes leftover margin */
+}
+
+main {
+    padding: 2em;
+    margin: 2em auto;
+    max-width: 768px;
+    background-color: #fff;
+    border: 1px solid #ececec;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+}
+
+hr {
+    margin: 2em 0;
+    border: 0 none;
+    border-top: 1px solid #ececec;
+}
+
+h1,
+h2 {
+    font-weight: bold;
+}
+
+pre {
+    margin: 1.5em 0;
+}
+
+h1:first-child,
+h2:first-child {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+.btn {
+    color: #454545;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+article + article {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #ececec;
+}
+
+//////////////////////////////////
+// import component less files hur
+//////////////////////////////////
+
+@import (less) "demos/demos";
+@import (less) "drop/drop";
+@import (less) "dialog/dialog";

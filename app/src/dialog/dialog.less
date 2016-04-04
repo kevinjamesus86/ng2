@@ -1,0 +1,119 @@
+@keyframes fade-in {
+    from {
+        display: none;
+        opacity: 0;
+    }
+    to {
+        display: block;
+        opacity: 1;
+    }
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(50px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.dialog-mask {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-left: 1em;
+    padding-right: 1em;
+    position: fixed;
+    background-color: rgba(0,0,0,0.33);
+    animation: 0.3s ease 1 fade-in;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &::after,
+    &::before {
+        content: "";
+        height: 2rem;
+        display: block;
+    }
+}
+
+.dialog {
+    margin: auto;
+    max-width: 640px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 1px rgba(76, 86, 103, 0.1),
+                0 8px 20px rgba(31, 37, 50, 0.3);
+    animation: 0.4s ease 1 slide-up;
+    overflow: hidden;
+
+    &__content,
+    &__footer,
+    &__header {
+        padding: 20px;
+        position: relative;
+
+        &::before,
+        &::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    }
+
+    &__header,
+    &__footer {
+        background-color: #f3f5f7;
+    }
+
+    &__header {
+        padding-right: 60px;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &__close {
+        width: 2.1em;
+        height: 2.1em;
+        right: -2.1em;
+        cursor: pointer;
+        transform: translateX(50%);
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        float: right;
+
+        &:hover {
+            &::after,
+            &::before {
+                background: #acacac;
+            }
+        }
+
+        &::after,
+        &::before {
+            content: "";
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            top: 50%;
+            left: 0;
+            margin-top: -1px;
+            background: currentColor;
+        }
+
+        &::before {
+            transform: rotate(45deg);
+        }
+
+        &::after {
+            transform: rotate(-45deg);
+        }
+    }
+}

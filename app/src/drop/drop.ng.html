@@ -1,0 +1,8 @@
+<div class="drop" (click)="toggleMenu()">
+    <div class="drop__label">{{ item?.label || 'Select a Thing' }}</div>
+    <template [ngIf]="show">
+        <div class="drop__items">
+            <ng-content></ng-content>
+        </div>
+    </template>
+</div>
