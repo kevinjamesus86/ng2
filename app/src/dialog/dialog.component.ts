@@ -9,6 +9,9 @@ import {
     OnDestroy
 } from 'angular2/core';
 
+import { BrowserDomAdapter } from 'angular2/platform/browser';
+
+import { AnimationRunner } from '../core/animation-runner';
 
 ///////////////
 ///////////////
@@ -32,30 +35,36 @@ import {
 export class Dialog {
 
     showDialog: boolean = false;
+    animationRunner: AnimationRunner;
+
     @Input() size: string = DialogSize.MD;
     @Output() onClose: EventEmitter<any> = new EventEmitter();
     @Output() onDismiss: EventEmitter<any> = new EventEmitter();
 
+    constructor(element: ElementRef) {
+        this.animationRunner = new AnimationRunner(
+            'dialog',
+            element,
+            new BrowserDomAdapter()
+        );
+    }
+
     open(): Promise<any> {
-        return new Promise((yep) => {
-            this.showDialog = true;
-            yep();
-        });
+        this.showDialog = true;
+        return this.animationRunner.enter();
     }
 
     close(result?: any): Promise<any> {
-        return new Promise((yep) => {
+        return this.animationRunner.leave().then(() => {
             this.showDialog = false;
             this.onClose.emit(result);
-            yep(result);
         });
     }
 
     dismiss(): Promise<any> {
-        return new Promise((yep) => {
+        return this.animationRunner.leave().then(() => {
             this.showDialog = false;
             this.onDismiss.emit(undefined);
-            yep();
         });
     }
 
@@ -66,6 +75,12 @@ export class Dialog {
     get dialogClasses(): string {
         return 'bb-dialog--' + this.size;
     }
+
+    ngOnDestroy() {
+        this.animationRunner.ngOnDestroy();
+        this.animationRunner = null;
+    }
+
 }
 
 export class DialogSize {
@@ -85,14 +100,14 @@ export class DialogSize {
 })
 
 export class DialogExternalCloser implements OnDestroy {
-    @ViewChild('dialog') dialogElementRef: ElementRef;
+    @ViewChild('dialog') elementRef: ElementRef;
 
     constructor(private dialog: Dialog) {}
 
     verifyEvent(event: MouseEvent) {
         let targetElement = event.target,
-            dialogElement = this.dialogElementRef &&
-                            this.dialogElementRef.nativeElement;
+            dialogElement = this.elementRef &&
+                            this.elementRef.nativeElement;
         if (targetElement && dialogElement && !dialogElement.contains(targetElement)) {
             this.dialog.dismiss();
         }
@@ -100,7 +115,7 @@ export class DialogExternalCloser implements OnDestroy {
 
     ngOnDestroy() {
         this.dialog = null;
-        this.dialogElementRef = null;
+        this.elementRef = null;
     }
 }
 

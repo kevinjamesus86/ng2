@@ -18,6 +18,29 @@
     }
 }
 
+.dialog-animate-enter {
+
+    .dialog-mask {
+        animation: 0.4s ease 1 fade-in;
+    }
+
+    .dialog {
+        animation: 0.4s ease 1 slide-up;
+    }
+}
+
+.dialog-animate-leave {
+
+    .dialog-mask {
+        animation: 0.4s ease 1 reverse fade-in;
+    }
+
+    .dialog {
+        animation: 0.4s ease 1 reverse slide-up;
+    }
+
+}
+
 .dialog-mask {
     top: 0;
     left: 0;
@@ -27,7 +50,6 @@
     padding-right: 1em;
     position: fixed;
     background-color: rgba(0,0,0,0.33);
-    animation: 0.3s ease 1 fade-in;
     overflow-x: hidden;
     overflow-y: scroll;
 
@@ -46,7 +68,6 @@
     border-radius: 4px;
     box-shadow: 0 0 1px rgba(76, 86, 103, 0.1),
                 0 8px 20px rgba(31, 37, 50, 0.3);
-    animation: 0.4s ease 1 slide-up;
     overflow: hidden;
 
     &__content,
