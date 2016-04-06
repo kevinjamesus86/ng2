@@ -41,23 +41,23 @@ export class Dialog {
     @Output() onClose: EventEmitter<any> = new EventEmitter();
     @Output() onDismiss: EventEmitter<any> = new EventEmitter();
 
-    constructor(element: ElementRef) {
-        this.animationRunner = new AnimationRunner(
-            'dialog',
-            element,
-            new BrowserDomAdapter()
-        );
+    constructor(elementRef: ElementRef) {
+        this.animationRunner = new DialogAnimationRunner(elementRef);
     }
 
     open(): Promise<any> {
         this.showDialog = true;
-        return this.animationRunner.enter();
+        return this.animationRunner.enter().then(null, function() {
+            console.log('Dialog LEAVE in progress, calm down.');
+        });
     }
 
     close(result?: any): Promise<any> {
         return this.animationRunner.leave().then(() => {
             this.showDialog = false;
             this.onClose.emit(result);
+        }, function() {
+            console.log('Dialog ENTER in progress, calm down.');
         });
     }
 
@@ -65,6 +65,8 @@ export class Dialog {
         return this.animationRunner.leave().then(() => {
             this.showDialog = false;
             this.onDismiss.emit(undefined);
+        }, function() {
+            console.log('Dialog ENTER in progress, calm down.');
         });
     }
 
@@ -117,6 +119,42 @@ export class DialogExternalCloser implements OnDestroy {
         this.dialog = null;
         this.elementRef = null;
     }
+}
+
+
+// Dialog Animation Runner
+
+export class DialogAnimationRunner extends AnimationRunner {
+    _enter: Promise<any>;
+    _leave: Promise<any>;
+
+    constructor(elementRef: ElementRef) {
+        super({
+            prefix: 'dialog',
+            elementRef: elementRef
+        });
+    }
+
+    enter(): Promise<any> {
+        return this._leave ? Promise.reject(false) : this._enter || (
+
+            this._enter = super.enter().then(() => {
+                this._enter = null;
+            })
+
+        );
+    }
+
+    leave(): Promise<any> {
+        return this._enter ? Promise.reject(false) : this._leave || (
+
+            this._leave = super.leave().then(() => {
+                this._leave = null;
+            })
+
+        );
+    }
+
 }
 
 
