@@ -2,8 +2,14 @@ import { Component } from 'angular2/core';
 
 import { DROP_DIRECTIVES } from '../../drop/drop';
 
+import {
+    Demo,
+    DemoTitle
+} from '../demo';
+
 ///////////////////
 ///////////////////
+
 
 class Friend {
     constructor(
@@ -12,12 +18,11 @@ class Friend {
     ) {}
 }
 
+
 @Component({
     selector: 'drop-demo',
     directives: [DROP_DIRECTIVES],
     template: `
-        <h2>Drop</h2>
-
         <button class="btn btn-default" (click)="reset()">
             reset friend
         </button>
@@ -36,7 +41,8 @@ class Friend {
     `
 })
 
-export class DropDemo {
+export class DropDemo extends Demo {
+    demoTitle = 'Drop';
 
     friends: Array<Friend> = [
         new Friend('Curtis Newcomer', 29),
@@ -49,6 +55,10 @@ export class DropDemo {
     ];
 
     friend: Friend = this.friends[0];
+
+    constructor(demoTite: DemoTitle) {
+        super(demoTite);
+    }
 
     reset() {
         this.friend = null;

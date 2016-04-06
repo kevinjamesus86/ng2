@@ -3,20 +3,21 @@ import {
     ViewChild
 } from 'angular2/core';
 
+import { DIALOG_DIRECTIVES } from '../../dialog/dialog';
+
 import {
-    Dialog,
-    DIALOG_DIRECTIVES
-} from '../../dialog/dialog';
+    Demo,
+    DemoTitle
+ } from '../demo';
 
 ///////////////
 ///////////////
+
 
 @Component({
     selector: 'dialog-demo',
     directives: [DIALOG_DIRECTIVES],
     template: `
-        <h2>Dialog</h2>
-
         <button class="btn btn-default" (click)="hipsters.open()">
             Show Hipster Speak
         </button>
@@ -40,4 +41,11 @@ import {
     `
 })
 
-export class DialogDemo { }
+export class DialogDemo extends Demo {
+    demoTitle = 'Dialog';
+
+    constructor(demoTite: DemoTitle) {
+        super(demoTite);
+    }
+
+}

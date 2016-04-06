@@ -15,14 +15,11 @@ import * as Demos from './demos/demos';
 @Component({
     selector: 'main',
     templateUrl: 'app/src/app.ng.html',
-    directives: [ROUTER_DIRECTIVES],
-    providers: [ROUTER_PROVIDERS]
+    directives: [ROUTER_DIRECTIVES]
 })
 
 @RouteConfig([
-    { path: '/demos', name: 'Demos', component: Demos.Demos, useAsDefault: true },
-    { path: '/dialogs', name: 'DialogDemo', component: Demos.DialogDemo },
-    { path: '/drops', name: 'DropDemo', component: Demos.DropDemo }
+    { path: '/demos/...', name: 'Demos', component: Demos.Demos, useAsDefault: true }
 ])
 
 export class AppComponent {}

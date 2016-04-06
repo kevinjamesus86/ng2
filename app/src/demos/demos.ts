@@ -3,18 +3,71 @@ import {
     Component
 } from 'angular2/core';
 
-import { ROUTER_DIRECTIVES } from 'angular2/router';
+import {
+    RouteConfig,
+    ROUTER_DIRECTIVES
+} from 'angular2/router';
 
-export * from './dialog/dialog';
-export * from './drop/drop';
+import { DemoTitle } from './demo';
+
+import * as Dialog from './dialog/dialog';
+import * as Drop from './drop/drop';
 
 ////////////////////
 ////////////////////
+
+
+@Component({
+    selector: 'demos-list',
+    directives: [ROUTER_DIRECTIVES],
+    template: `
+    <ul class="demos-nav">
+        <li>
+            <a href [routerLink]="['Dialog']">Dialog</a>
+            <p>
+                Show messages, get feedback, do a bunch of custom stuff.. etc
+            </p>
+        </li>
+        <li>
+            <a href [routerLink]="['Drop']">Dropdown</a>
+            <p>
+                Display a list of things, select said things, get notified about it.. etc
+            </p>
+        </li>
+    </ul>
+    `
+})
+
+class List { }
+
 
 @Component({
     selector: 'demos',
     templateUrl: 'app/src/demos/demos.ng.html',
-    directives: [ROUTER_DIRECTIVES]
+    directives: [ROUTER_DIRECTIVES],
+    providers: [DemoTitle],
+    styles: [`
+        h2 {
+            padding-bottom: 1em;
+            margin-bottom: 1.5em;
+            border-bottom: 1px solid #ececec;
+        }
+    `]
 })
 
-export class Demos { }
+@RouteConfig([
+    { path: '/', name: 'List', component: List, useAsDefault: true },
+    { path: '/dialog', name: 'Dialog', component: Dialog.DialogDemo },
+    { path: '/drop', name: 'Drop', component: Drop.DropDemo }
+])
+
+export class Demos {
+    demoTitle: string;
+
+    constructor(private _demoTitle: DemoTitle) {
+        this._demoTitle.value.subscribe((value) => {
+            this.demoTitle = value;
+        });
+    }
+
+}
