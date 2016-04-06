@@ -5,12 +5,24 @@ module.exports = function(bs) {
         url = require('url'),
         less = require('less'),
         chalk = require('chalk'),
+        prefixer,
         config;
+
+
+    prefixer = require('postcss')([
+        require('autoprefixer')({
+            browsers: [
+                'last 2 versions',
+                'ie 9',
+                'ie 10',
+                'ie 11'
+            ]
+        })
+    ]);
 
     config = {
         injectChanges: true,
         injectFileTypes: [
-            'css',
             'less'
         ],
         files: [
@@ -46,9 +58,11 @@ module.exports = function(bs) {
     function lessMiddleware(req, res, next) {
         var parsed = url.parse(req.url);
         if (parsed.pathname.match(/\.less$/)) {
-            parseLess(parsed.pathname, function(o) {
-                res.setHeader('Content-Type', 'text/css');
-                res.end(o.css);
+            parseLess(parsed.pathname).then(function(parsed) {
+                prefixer.process(parsed.css).then(function(prefixed) {
+                    res.setHeader('Content-Type', 'text/css');
+                    res.end(prefixed.css);
+                });
             });
         } else {
             next && next();
@@ -58,36 +72,36 @@ module.exports = function(bs) {
     /**
      * Compile less
      */
-    function parseLess(src, done) {
+    function parseLess(src) {
         var config = {
             paths: [
                 'app/src',
                 'app/components'
             ]
         };
+        return new Promise(function(resolve) {
+            fs.readFile('./' + src, 'utf-8', function(e, file) {
+                less.render(file, config).then(resolve, function(err) {
+                    console.log('HERE', err);
+                    var msg =
+                        '\n' +
+                        chalk.red('LESS Compilation Error ') +
+                        chalk.grey(JSON.stringify(err, null, 2)) +
+                        '\n',
+                        plain = chalk.stripColor(msg);
 
-        function nope(err) {
-            var msg =
-                '\n' +
-                chalk.red('LESS Compilation Error ') +
-                chalk.grey(JSON.stringify(err, null, 2)) +
-                '\n',
-                plain = chalk.stripColor(msg);
+                    // drop it in the console
+                    console.log(msg);
 
-            // drop it in the console
-            console.log(msg);
+                    // tell the client about it
+                    bs.notify('LESS compilation error, check yo terminal.', 5000);
 
-            // tell the client about it
-            bs.notify('LESS compilation error, check yo terminal.', 5000);
-
-            // and send it in the source
-            done({
-                css: `/** ${plain} */`
+                    // and send it in the source
+                    resolve({
+                        css: `/** ${plain} */`
+                    });
+                });
             });
-        }
-
-        fs.readFile('./' + src, 'utf-8', function(e, file) {
-            less.render(file, config).then(done, nope);
         });
     }
 };
