@@ -8,6 +8,8 @@ import {
     ROUTER_DIRECTIVES
 } from 'angular2/router';
 
+import { Subscription } from 'rxjs/Subscription';
+
 import { DemoTitle } from './demo';
 
 import * as Dialog from './dialog/dialog';
@@ -62,12 +64,18 @@ class List { }
 ])
 
 export class Demos {
-    demoTitle: string;
+    title: string;
+    titleSubscription: Subscription;
 
-    constructor(private _demoTitle: DemoTitle) {
-        this._demoTitle.value.subscribe((value) => {
-            this.demoTitle = value;
-        });
+    constructor(private titleService: DemoTitle) {
+        this.titleSubscription = titleService.titleChange.subscribe(
+            title => {
+                this.title = title;
+            });
+    }
+
+    ngOnDestroy() {
+        this.titleSubscription.unsubscribe();
     }
 
 }

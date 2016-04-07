@@ -42,7 +42,7 @@ class Friend {
 })
 
 export class DropDemo extends Demo {
-    demoTitle = 'Drop';
+    title = 'Drop';
 
     friends: Array<Friend> = [
         new Friend('Curtis Newcomer', 29),

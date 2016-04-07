@@ -42,7 +42,7 @@ import {
 })
 
 export class DialogDemo extends Demo {
-    demoTitle = 'Dialog';
+    title = 'Dialog';
 
     constructor(demoTite: DemoTitle) {
         super(demoTite);
